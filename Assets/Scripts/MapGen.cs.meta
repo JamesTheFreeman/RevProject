@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: fe47d6da31f83794f8a51a215071d32e
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - grid: {instanceID: 0}
+  - sGrid: {instanceID: 0}
+  - mGrid: {instanceID: 0}
+  - room: {fileID: 3514050661423425240, guid: 763981b528a9f264492d46a1317d8a5c, type: 3}
+  - walls: {fileID: 445188687424956421, guid: 92258b6250894564e903556330391042, type: 3}
+  - bridge: {fileID: 2171914666166035471, guid: 5c87a6c47d2e8b143a81a275ed5fa023, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
