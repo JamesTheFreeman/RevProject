@@ -17,8 +17,8 @@ public class MapGen : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        coords = new int[1000][];          // Initialize x-section of array
-        for (int i = 0; i < 1000; i ++)      // Initialize y-section of array
+        coords = new int[1000][];           // Initialize x-section of array
+        for (int i = 0; i < 1000; i ++)     // Initialize y-section of array
             coords[i] = new int[1000];
         rms = new RoomObject[100];
 
@@ -43,6 +43,7 @@ public class MapGen : MonoBehaviour
            int lastY = 999;
            do
            {
+               int r = 999; // NESW value
                if (coords[X][Y] == 0)
                {
                     makeRoom(X, Y, i);
@@ -53,7 +54,8 @@ public class MapGen : MonoBehaviour
                {
                     if (Random.Range(0, 5) > 0)
                     {
-                        burnBridges(lastX, lastY, X, Y, lastR);
+                        if (!checkBridge(X, Y, r, true))
+                            burnBridges(lastX, lastY, X, Y, lastR);
                         i -= 1;
                         break;
                     }
@@ -64,7 +66,6 @@ public class MapGen : MonoBehaviour
                         break;
                     }
                }
-               int r; // NESW value
                do
                {
                     r = Random.Range(0, 4); // Random int 0-3 for NESW
@@ -94,22 +95,22 @@ public class MapGen : MonoBehaviour
                     case 0:
                         lastX = X;
                         lastY = Y;
-                        X += 1;
+                        Y += 1;
                         break;
                     case 1:
                         lastX = X;
                         lastY = Y;
-                        Y += 1;
+                        X += 1;
                         break;
                     case 2:
                         lastX = X;
                         lastY = Y;
-                        X -= 1;
+                        Y -= 1;
                         break;
                     case 3:
                         lastX = X;
                         lastY = Y;
-                        Y -= 1;
+                        X -= 1;
                         break;
                }
            } 
@@ -142,22 +143,26 @@ public class MapGen : MonoBehaviour
         switch(lr)
         {
             case 0:
-                if (rms[A].getS() != 0) return false;
+                int c0 = rms[A].getS();
+                if (c0 != 0 || c0 == 5) return false;
                 rms[A].setS(B);
                 rms[B].setN(A);
                 break;
             case 1:
-                if (rms[A].getW() != 0) return false;
+                int c1 = rms[A].getW();
+                if (c1 != 0 || c1 == 5) return false;
                 rms[A].setW(B);
                 rms[B].setE(A);
                 break;
             case 2:
-                if (rms[A].getN() != 0) return false;
+                int c2 = rms[A].getN();
+                if (c2 != 0 || c2 == 5) return false;
                 rms[A].setN(B);
                 rms[B].setS(A);
                 break;
             case 3:
-                if (rms[A].getE() != 0) return false;
+                int c3 = rms[A].getE();
+                if (c3 != 0 || c3 == 5) return false;
                 rms[A].setE(B);
                 rms[B].setW(A);
                 break;
@@ -201,6 +206,37 @@ public class MapGen : MonoBehaviour
                 rms[A].setE(5);
                 rms[B].setW(5);
                 break;
+        }
+    }
+
+    // Checks for bridge in given direction
+    public bool checkBridge(int x, int y, int dir, bool burn)
+    {
+        int check;
+        switch(dir)
+        {
+            case 0:
+                check = rms[coords[x][y]].getN();
+                break;
+            case 1:
+                check = rms[coords[x][y]].getE();
+                break;
+            case 2:
+                check = rms[coords[x][y]].getS();
+                break;
+            case 3:
+                check = rms[coords[x][y]].getW();
+                break;
+            default:
+                Debug.Log("Err: What the hell did you do?");
+                return false;
+        }
+        if (burn && (check != 0 || check == 5)) return true;        // Specific helper for BurnBridges
+        else if (!burn && check != 0 && check != 5) return true;    // Generic use
+        else
+        {
+            Debug.Log(check);
+            return false;
         }
     }
 }
