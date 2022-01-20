@@ -10,7 +10,8 @@ public class MapGen : MonoBehaviour
     public GameObject room;                 // Room
     public GameObject walls;                // Room walls
     public GameObject bridge;               // Bridge/door between rooms
-    public int mapSize = 50;                // Size of the map
+    public int mapSize = 50;                // Size of the map (>= 500)
+    public int wallRNG = 50;
     private int[][] coords;                 // Coordinate value array
     private RoomObject[] rms;               // Room class array
 
@@ -20,7 +21,7 @@ public class MapGen : MonoBehaviour
         coords = new int[1000][];           // Initialize x-section of array
         for (int i = 0; i < 1000; i ++)     // Initialize y-section of array
             coords[i] = new int[1000];
-        rms = new RoomObject[100];
+        rms = new RoomObject[500];
 
         genMap();
     }
@@ -33,89 +34,128 @@ public class MapGen : MonoBehaviour
 
     public void genMap()
     {
-       for (int i = 1; i <= mapSize; i++)
-       {
-           // Tracking variables for room generation
-           int X = 100;
-           int Y = 100;
-           int lastR = 999;
-           int lastX = 999;
-           int lastY = 999;
-           do
-           {
-               int r = 999; // NESW value
-               if (coords[X][Y] == 0)
-               {
-                    makeRoom(X, Y, i);
-                    if(lastR != 999) makeBridge(lastX, lastY, X, Y, lastR);
+        int x = 500;
+        int y = 500;
+
+        makeRoom(x, y, 1); // First room
+
+        for (int i = 2; i <= mapSize; i++)
+        {
+            // Variables
+            int lastID          = -5;
+            int lastX           = -5;
+            int lastY           = -5;
+            int lastDirection   = -5;
+            int direction       = -5;
+
+            x = 500;
+            y = 500;
+
+            while (true)
+            {
+                lastDirection = direction;
+
+                // Selects next direction to travel
+                while (true)
+                {
+                    do {direction = Random.Range(0, 4);}
+                    // Makes sure you aren't backtracking
+                    while (direction - 2 == lastDirection || direction + 2 == lastDirection);
+                    // Checks that path isn't blocked
+                    if (rms[coords[x][y]].adj[direction] >= 0) break;
+                }
+
+                // Update variables
+                lastX = x;
+                lastY = y;
+                lastID = rms[coords[lastX][lastY]].id;
+
+                // Adjust x & y values
+                x = moveXY(x, y, direction)[0];
+                y = moveXY(x, y, direction)[1];
+
+                // Empty space found
+                if (coords[x][y] == 0)
+                {
+                    // Make room/bridge
+                    makeRoom(x, y, i);
+                    genBridge((float)(x + lastX) / (float)2, (float)(y + lastY) / (float)2);
+
+                    // Set IDs in adjacency arrays for bridge
+                    rms[i].adj[inverseDirection(direction)] = lastID;
+                    rms[lastID].adj[direction] = i;
+
+                    // Next i value
                     break;
-               }
-               else if (lastR != 999)
-               {
-                    if (Random.Range(0, 5) > 0)
+                }
+                // Gap between rooms found
+                else if (rms[lastID].adj[direction] == 0)
+                {
+                    int rnd = Random.Range(0, 100);
+
+                    // wallRNG = % chance of a wall
+                    if (rnd < wallRNG)
                     {
-                        if (!checkBridge(X, Y, r, true))
-                            burnBridges(lastX, lastY, X, Y, lastR);
-                        i -= 1;
-                        break;
+                        // Blocks path
+                        rms[coords[x][y]].adj[inverseDirection(direction)] = -5;
+                        rms[lastID].adj[direction] = -5;
                     }
-                    bool newBridge = makeBridge(lastX, lastY, X, Y, lastR);
-                    if (newBridge)
+                    else
                     {
-                        i -= 1;
-                        break;
+                        // Bridges path
+                        genBridge((float)(x + lastX) / (float)2, (float)(y + lastY) / (float)2);
+                        rms[coords[x][y]].adj[inverseDirection(direction)] = lastID;
+                        rms[lastID].adj[direction] = coords[x][y];
                     }
-               }
-               do
-               {
-                    r = Random.Range(0, 4); // Random int 0-3 for NESW
-                    if (lastR - 2 != r && lastR + 2 != r)
-                    {
-                        switch(r)
-                        {
-                            case 0:
-                                lastR = 2;
-                                break;
-                            case 1:
-                                lastR = 3;
-                                break;
-                            case 2:
-                                lastR = 0;
-                                break;
-                            case 3:
-                                lastR = 1;
-                                break;
-                        }
-                    }
-                    else continue;
-               } 
-               while (false);
-               switch(r)
-               {
-                    case 0:
-                        lastX = X;
-                        lastY = Y;
-                        Y += 1;
-                        break;
-                    case 1:
-                        lastX = X;
-                        lastY = Y;
-                        X += 1;
-                        break;
-                    case 2:
-                        lastX = X;
-                        lastY = Y;
-                        Y -= 1;
-                        break;
-                    case 3:
-                        lastX = X;
-                        lastY = Y;
-                        X -= 1;
-                        break;
-               }
-           } 
-           while(true);
-       }
+                    // Bridge made/blocked, restart
+                    i -= 1;
+                    break;
+                }
+                // Nothing found, carry on
+                else continue;
+            }
+        }
+    }
+
+    private int inverseDirection(int dir)
+    {
+        switch(dir)
+        {
+            case 0:
+                return 2;
+            case 1:
+                return 3;
+            case 2:
+                return 0;
+            case 3:
+                return 1;
+            default:
+                return -5;
+        }
+    }
+    private int[] moveXY(int x, int y, int dir)
+    {
+        int[] xy = new int[2];
+        switch(dir)
+        {
+            case 0:
+                xy[0] = x;
+                xy[1] = y + 1;
+                break;
+            case 1:
+                xy[0] = x + 1;
+                xy[1] = y;
+                break;
+            case 2:
+                xy[0] = x;
+                xy[1] = y - 1;
+                break;
+            case 3:
+                xy[0] = x - 1;
+                xy[1] = y;
+                break;
+        }
+        return xy;
     }
 
     private void makeRoom(int x, int y, int id)
@@ -136,41 +176,6 @@ public class MapGen : MonoBehaviour
         wll.transform.localScale = new Vector3(0.5f, 0.5f, 1);
     }
 
-    private bool makeBridge(int lx, int ly, int x, int y, int lr)
-    {
-        int A = coords[lx][ly];
-        int B = coords[x][y];
-        switch(lr)
-        {
-            case 0:
-                int c0 = rms[A].getS();
-                if (c0 != 0 || c0 == 5) return false;
-                rms[A].setS(B);
-                rms[B].setN(A);
-                break;
-            case 1:
-                int c1 = rms[A].getW();
-                if (c1 != 0 || c1 == 5) return false;
-                rms[A].setW(B);
-                rms[B].setE(A);
-                break;
-            case 2:
-                int c2 = rms[A].getN();
-                if (c2 != 0 || c2 == 5) return false;
-                rms[A].setN(B);
-                rms[B].setS(A);
-                break;
-            case 3:
-                int c3 = rms[A].getE();
-                if (c3 != 0 || c3 == 5) return false;
-                rms[A].setE(B);
-                rms[B].setW(A);
-                break;
-        }
-        genBridge((float)(x + lx) / (float)2, (float)(y + ly) / (float)2);
-        return true;
-    }
-
     private void genBridge(float x, float y)
     {
         GameObject brge = Instantiate(bridge);
@@ -179,64 +184,11 @@ public class MapGen : MonoBehaviour
         brge.transform.localScale = new Vector3(0.5f, 0.5f, 1);
     }
 
-    // Blocks bridge slot
-    private void burnBridges(int lx, int ly, int x, int y, int lr)
-    {
-        int A = coords[lx][ly];
-        int B = coords[x][y];
-        switch(lr)
-        {
-            case 0:
-                if (rms[A].getS() != 0) return;
-                rms[A].setS(5);
-                rms[B].setN(5);
-                break;
-            case 1:
-                if (rms[A].getW() != 0) return;
-                rms[A].setW(5);
-                rms[B].setE(5);
-                break;
-            case 2:
-                if (rms[A].getN() != 0) return;
-                rms[A].setN(5);
-                rms[B].setS(5);
-                break;
-            case 3:
-                if (rms[A].getE() != 0) return;
-                rms[A].setE(5);
-                rms[B].setW(5);
-                break;
-        }
-    }
-
     // Checks for bridge in given direction
-    public bool checkBridge(int x, int y, int dir, bool burn)
+    public bool checkBridge(int x, int y, int dir)
     {
-        int check;
-        switch(dir)
-        {
-            case 0:
-                check = rms[coords[x][y]].getN();
-                break;
-            case 1:
-                check = rms[coords[x][y]].getE();
-                break;
-            case 2:
-                check = rms[coords[x][y]].getS();
-                break;
-            case 3:
-                check = rms[coords[x][y]].getW();
-                break;
-            default:
-                Debug.Log("Err: What the hell did you do?");
-                return false;
-        }
-        if (burn && (check != 0 || check == 5)) return true;        // Specific helper for BurnBridges
-        else if (!burn && check != 0 && check != 5) return true;    // Generic use
-        else
-        {
-            Debug.Log(check);
-            return false;
-        }
+        int check = rms[coords[x][y]].adj[dir];
+        if (check > 0) return true;
+        else return false;
     }
 }

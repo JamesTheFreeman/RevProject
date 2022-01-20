@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 519420032}
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
+  - component: {fileID: 519420030}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -149,6 +150,20 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_Enabled: 1
+--- !u!114 &519420030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af5819195ed20d14cb885b5b2dd5ec25, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 4164481936751409674}
+  _Player: {fileID: 0}
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -200,7 +215,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 100, y: 100, z: -10}
+  m_LocalPosition: {x: 500, y: 500, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1238055768}
@@ -474,7 +489,8 @@ MonoBehaviour:
   room: {fileID: 3514050661423425240, guid: 763981b528a9f264492d46a1317d8a5c, type: 3}
   walls: {fileID: 445188687424956421, guid: 92258b6250894564e903556330391042, type: 3}
   bridge: {fileID: 2171914666166035471, guid: 5c87a6c47d2e8b143a81a275ed5fa023, type: 3}
-  mapSize: 50
+  mapSize: 200
+  wallRNG: 35
 --- !u!4 &2040750674
 Transform:
   m_ObjectHideFlags: 0
@@ -546,11 +562,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4164481937160040880, guid: 46a4172ec7dc90b43be8a109d999af6f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 100
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 4164481937160040880, guid: 46a4172ec7dc90b43be8a109d999af6f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 100
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 4164481937160040880, guid: 46a4172ec7dc90b43be8a109d999af6f, type: 3}
       propertyPath: m_LocalPosition.z

@@ -342,6 +342,8 @@
 -r:"Library/Bee/artifacts/1900b0aE.dag/UnityEngine.UI.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aE.dag/VSSettingsProvider.ref.dll"
 "Assets/Scripts/BackgroundScaler.cs"
+"Assets/Scripts/CameraBehavior.cs"
+"Assets/Scripts/MainMenu.cs"
 "Assets/Scripts/MapGen.cs"
 "Assets/Scripts/PlayerMovement.cs"
 "Assets/Scripts/RoomObject.cs"

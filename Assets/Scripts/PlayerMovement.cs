@@ -23,7 +23,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.W))
         {
-            if (mapGen.checkBridge(xloc, yloc, 0, false))
+            if (mapGen.checkBridge(xloc, yloc, 0))
             {
                 // Debug.Log("Move N");
                 yloc += 1;
@@ -32,7 +32,7 @@ public class PlayerMovement : MonoBehaviour
         }
         if(Input.GetKeyDown(KeyCode.D))
         {
-            if (mapGen.checkBridge(xloc, yloc, 1, false))
+            if (mapGen.checkBridge(xloc, yloc, 1))
             {
                 // Debug.Log("Move E");
                 xloc += 1;
@@ -41,7 +41,7 @@ public class PlayerMovement : MonoBehaviour
         }
         if(Input.GetKeyDown(KeyCode.S))
         {
-            if (mapGen.checkBridge(xloc, yloc, 2, false))
+            if (mapGen.checkBridge(xloc, yloc, 2))
             {
                 // Debug.Log("Move S");
                 yloc -= 1;
@@ -50,7 +50,7 @@ public class PlayerMovement : MonoBehaviour
         }
         if(Input.GetKeyDown(KeyCode.A))
         {
-            if (mapGen.checkBridge(xloc, yloc, 3, false))
+            if (mapGen.checkBridge(xloc, yloc, 3))
             {
                 // Debug.Log("Move W");
                 xloc -= 1;
