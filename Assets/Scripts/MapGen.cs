@@ -11,8 +11,9 @@ public class MapGen : MonoBehaviour
     public GameObject walls;                // Room walls
     public GameObject bridge;               // Bridge/door between rooms
     public int mapSize = 50;                // Size of the map (>= 500)
-    public int wallRNG = 50;
-    private int[][] coords;                 // Coordinate value array
+    public int RNGStartVal = 150;           // Value of % chance of wall at start
+    public int RNGIncrmnt = 2;              // % chance increase of bridge per non-bridge
+    private int[][] coords;                 // Coordinate value array   
     private RoomObject[] rms;               // Room class array
 
     // Start is called before the first frame update
@@ -32,7 +33,7 @@ public class MapGen : MonoBehaviour
         
     }
 
-    public void genMap()
+    private void genMap()
     {
         int x = 500;
         int y = 500;
@@ -47,6 +48,7 @@ public class MapGen : MonoBehaviour
             int lastY           = -5;
             int lastDirection   = -5;
             int direction       = -5;
+            int wallRNG         = RNGStartVal;
 
             x = 500;
             y = 500;
@@ -74,6 +76,9 @@ public class MapGen : MonoBehaviour
                 x = moveXY(x, y, direction)[0];
                 y = moveXY(x, y, direction)[1];
 
+                // Bridge chance increases
+                wallRNG -= RNGIncrmnt;
+
                 // Empty space found
                 if (coords[x][y] == 0)
                 {
@@ -91,14 +96,18 @@ public class MapGen : MonoBehaviour
                 // Gap between rooms found
                 else if (rms[lastID].adj[direction] == 0)
                 {
-                    int rnd = Random.Range(0, 100);
+                    int rnd = Random.Range(0, 101);
 
                     // wallRNG = % chance of a wall
-                    if (rnd < wallRNG)
+                    if (rnd <= wallRNG)
                     {
+                        /* BREAKS THE DAMN GAME
                         // Blocks path
                         rms[coords[x][y]].adj[inverseDirection(direction)] = -5;
                         rms[lastID].adj[direction] = -5;
+                        */
+                        
+                        continue;
                     }
                     else
                     {
@@ -106,10 +115,14 @@ public class MapGen : MonoBehaviour
                         genBridge((float)(x + lastX) / (float)2, (float)(y + lastY) / (float)2);
                         rms[coords[x][y]].adj[inverseDirection(direction)] = lastID;
                         rms[lastID].adj[direction] = coords[x][y];
+                        
+                        continue;
                     }
-                    // Bridge made/blocked, restart
+                    /*
+                    // Restart
                     i -= 1;
                     break;
+                    */
                 }
                 // Nothing found, carry on
                 else continue;

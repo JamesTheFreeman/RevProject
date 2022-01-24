@@ -65,13 +65,17 @@ ScriptsOnlyBuild:
     - Class: 104
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 3910}
+      Script: {instanceID: 2676}
     - Class: 114
-      Script: {instanceID: 5220}
+      Script: {instanceID: 3918}
     - Class: 114
-      Script: {instanceID: 6190}
+      Script: {instanceID: 5228}
     - Class: 114
-      Script: {instanceID: 6378}
+      Script: {instanceID: 6198}
+    - Class: 114
+      Script: {instanceID: 6380}
+    - Class: 114
+      Script: {instanceID: 6734}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 157
@@ -102,23 +106,23 @@ ScriptsOnlyBuild:
     - Class: 104
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 1532}
+      Script: {instanceID: 1540}
     - Class: 114
-      Script: {instanceID: 2668}
+      Script: {instanceID: 2676}
     - Class: 114
-      Script: {instanceID: 2902}
+      Script: {instanceID: 2910}
     - Class: 114
-      Script: {instanceID: 3208}
+      Script: {instanceID: 3216}
     - Class: 114
-      Script: {instanceID: 5820}
+      Script: {instanceID: 5828}
     - Class: 114
-      Script: {instanceID: 6166}
+      Script: {instanceID: 6174}
     - Class: 114
-      Script: {instanceID: 6732}
+      Script: {instanceID: 6734}
     - Class: 114
-      Script: {instanceID: 7122}
+      Script: {instanceID: 7124}
     - Class: 114
-      Script: {instanceID: 7234}
+      Script: {instanceID: 7236}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -762,7 +766,7 @@ ScriptsOnlyBuild:
     className: CanvasScaler
   - hash:
       serializedVersion: 2
-      Hash: f4139a72bdb73ec38c7aadc29de5b3f2
+      Hash: bca852fa0ae3f18fa48ccc054b173560
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: MapGen
